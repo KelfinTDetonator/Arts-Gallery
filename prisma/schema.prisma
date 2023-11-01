@@ -11,16 +11,15 @@ datasource db {
 }
 
 model profiles {
-  id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(50)
-  gender        String?
-  phone         String?
-  image_profile String
-  location      String?
-  user          users    @relation(fields: [user_id], references: [id])
-  user_id       Int      @unique
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(50)
+  gender     String?
+  phone      String?
+  location   String?
+  user       users    @relation(fields: [user_id], references: [id])
+  user_id    Int      @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model users {
@@ -35,6 +34,7 @@ model users {
 
 model collections {
   id          Int      @id @default(autoincrement())
+  photo       String  
   title       String   @db.VarChar(100)
   description String
   artist_id   Int
