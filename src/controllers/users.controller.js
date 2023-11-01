@@ -10,16 +10,25 @@ module.exports = {
             const user = await users.create({
                 data: {
                     email,
-                    password: encryptPassword(password),
-                    profile: {
-                        name,
-                        gender,
-                        phone,
-                        location,
+                    password: await encryptPassword(password),
+                    profile: { 
+                        create:{
+                            name,
+                            gender,
+                            phone,
+                            location,
+                        }
                     }
                 },
                 include:{
-                    profile: true,
+                    profile: {
+                        select:{
+                            name: true,
+                            gender: true,
+                            phone: true,
+                            location: true,
+                        }
+                    },
                 }
             })
             delete user.password
