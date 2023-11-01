@@ -3,8 +3,8 @@ const {app, createError} = require('./app')
 const PORT = process.env.PORT;
 
 //routes
-const indexRoute = require('./routes/index.router')
-app.use(indexRoute)
+const indexRoute = require('./src/routes/index')
+app.use('/api/v1', indexRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -23,5 +23,5 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(PORT, ()=>{
-    console.log(`Server is listening to http://localhost:${PORT}`);
+    console.log(`Server is listening to http://localhost:${PORT}/api/v1`);
 })
