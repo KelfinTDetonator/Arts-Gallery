@@ -18,19 +18,20 @@ module.exports={
                 throw new CustomError(400, "Bad Syntax")
             }
 
-            let { title, description, artist_id } = req.body
+            let { title, description, artistId } = req.body
             const upload = await collections.create({
                 data: {
                     photo: imageUrl,
                     title,
                     description,
-                    artist_id: parseInt(artist_id)
+                    artistId: parseInt(artistId)
                 }
             });
             return res.status(201).json(
                 response.success("Posted successfully", upload)
             )
         } catch (error) {
+            console.log(error)
             if(error.statusCode){
                 return res.status(error.statusCode).json(response.error(error.message))
             }
