@@ -11,34 +11,34 @@ datasource db {
 }
 
 model profiles {
-  id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(50)
-  gender     String?
-  phone      String?
-  location   String?
-  user       users    @relation(fields: [user_id], references: [id])
-  user_id    Int      @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  gender    String?
+  phone     String?
+  location  String?
+  user      users    @relation(fields: [user_id], references: [id])
+  user_id   Int      @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model users {
-  id         Int           @id @default(autoincrement())
-  email      String        @unique
-  password   String
-  profile    profiles?
-  arts       collections[]
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
+  id        Int           @id @default(autoincrement())
+  email     String        @unique
+  password  String
+  profile   profiles?
+  arts      collections[]
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
 }
 
 model collections {
   id          Int      @id @default(autoincrement())
-  photo       String  
+  photo       String
   title       String   @db.VarChar(100)
   description String
   artist_id   Int
   artist      users?   @relation(fields: [artist_id], references: [id])
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
