@@ -36,7 +36,7 @@ module.exports = {
                 response.success("Account created successfully", user)
             )
         } catch (err) {
-            console.error(err, "\n", err.status)
+            console.log(err)
             res.status(500).json(response.error("Internal Server Error"))
         }
 
