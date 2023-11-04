@@ -23,5 +23,5 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(PORT, ()=>{
-    console.log(`Server is listening to http://localhost:${PORT}/api/v1`);
+    console.log(`Server is listening at ${PORT}`);
 })
