@@ -39,6 +39,7 @@ module.exports={
             return res.status(500).json(response.error(error.message))
         }
     },
+    
     getCollections: async(req, res) => {
         try {
             const data = await collections.findMany();
@@ -55,6 +56,7 @@ module.exports={
             return res.status(500).json(response.error(error.message))
         }
     },
+
     getDetailCollectionByUserId: async (req, res, next) => {
         try {
             const userId = parseInt(req.params.id);
@@ -91,5 +93,45 @@ module.exports={
                 res.status(500).send("Internal Server Error"); return;
             }
         }
+    },
+
+    editCollection: async(req, res) => {
+        try {
+            const collectionId = parseInt(req.params.id);
+            const {title, description} = req.body;
+            if(!(title && description)){
+                throw new CustomError(400, "Bad Syntax")
+            }
+
+            const collection = await collections.findUnique({
+                where: {
+                    id: collectionId
+                }
+            })
+
+            if(!collection){
+                throw new CustomError(404, "Collection Not Found")
+            }
+
+            const edited = await collections.update({
+                where: {
+                    id: collection.id
+                },
+                data:{
+                    title,
+                    description
+                }
+            });
+
+            res.status(204).json(response.success("Collection updated successfully", edited))
+        } catch (error) {
+            console.log(error);
+            if(error.statusCode){
+                res.status(error.statusCode).json(response.error(error.message)); return;
+            } else {
+                res.status(500).json(response.error("Internal Server Error")); return;
+            }
+        }
+
     }
 }
