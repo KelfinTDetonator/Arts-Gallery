@@ -5,6 +5,8 @@ const storage = require('../middlewares/multer');
 router.get('/upload/images', (req, res)=> {
     return res.render('form')
 })
+router.get('/gallery', controller.getCollections)
+router.get('/gallery/:id', controller.getDetailCollectionByUserId)
 router.post('/upload/images', storage.upload.single('photo'), controller.uploadCollection);
 
 //upload to imagekit.io
