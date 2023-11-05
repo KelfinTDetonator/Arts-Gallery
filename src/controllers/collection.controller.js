@@ -1,7 +1,8 @@
-const { collections } = require('../../models/prismaClient')
+const { collections, users } = require('../../models/prismaClient')
 const response = require('../../utils/response.utils')
 const { validateMIMEType } = require('validate-image-type')
 const { CustomError } = require('../../utils/customError.utils')
+const userController = require('./users.controller')
 
 module.exports={
     uploadCollection: async(req, res)=>{
@@ -24,7 +25,7 @@ module.exports={
                     photo: imageUrl,
                     title,
                     description,
-                    artistId: parseInt(artistId)
+                    artist_id: parseInt(artistId)
                 }
             });
             return res.status(201).json(
@@ -36,6 +37,55 @@ module.exports={
                 return res.status(error.statusCode).json(response.error(error.message))
             }
             return res.status(500).json(response.error(error.message))
+        }
+    },
+    getCollections: async(req, res) => {
+        try {
+            const data = await collections.findMany();
+            if(!data){
+                throw new CustomError(500, "Internal Server Error")
+            }
+            res.status(200).json(
+                response.success("Data fetched 200 OK", data)
+            )
+        } catch (error) {
+            if(error.statusCode){
+                return res.status(error.statusCode).json(response.error(error.message))
+            }
+            return res.status(500).json(response.error(error.message))
+        }
+    },
+    getDetailCollectionByUserId: async (req, res) => {
+        try {
+            const userId = parseInt(req.params.id);
+            if(typeof userId !== 'number'){
+                throw new CustomError(400, "Bad syntax")
+            }
+
+            const getUser = await users.findUnique({
+                where: {id: userId}
+            })
+            if(!getUser){
+                throw new CustomError(404, "User not found")
+            }
+            delete getUser.password
+
+            const getCollectionByUserId = await collections.findMany({
+                where: {
+                    artist_id: userId
+                }
+            })
+
+            if(!getCollectionByUserId){
+                throw new CustomError(404, "Not Found!")
+            }
+
+            res.status(200).json(
+                response.success("Data fetched 200 OK", getCollectionByUserId)
+            )
+        } catch (error) {
+            console.log(error);
+            
         }
     }
 }
