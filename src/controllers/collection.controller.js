@@ -55,7 +55,7 @@ module.exports={
             return res.status(500).json(response.error(error.message))
         }
     },
-    getDetailCollectionByUserId: async (req, res) => {
+    getDetailCollectionByUserId: async (req, res, next) => {
         try {
             const userId = parseInt(req.params.id);
             if(typeof userId !== 'number'){
@@ -85,7 +85,11 @@ module.exports={
             )
         } catch (error) {
             console.log(error);
-            
+            if(error.statusCode){
+                res.status(error.statusCode).json(response.error(error.message)); return;
+            } else {
+                res.status(500).send("Internal Server Error"); return;
+            }
         }
     }
 }
