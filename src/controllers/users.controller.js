@@ -39,6 +39,31 @@ module.exports = {
             console.log(err)
             res.status(500).json(response.error("Internal Server Error"))
         }
+    },
+    getUserById: async(req, res) => {
+        try {
+            const userId = parseInt(req.params.id);
+            if(typeof userId !== 'number'){
+                throw new CustomError(400, "Bad syntax")
+            }
 
+            const getUser = await users.findUnique({
+                where: {id: userId}
+            })
+            if(!getUser){
+                throw new CustomError(404, "User not found")
+            }
+            delete getUser.password
+            res.status(200).json(
+                response.success("Data fetched 200 OK", getUser)
+            )
+    
+        } catch (error) {
+            console.log(error)
+            if(error.statusCode){
+                return res.status(error.statusCode).json(response.error(error.message))
+            }
+            return res.status(500).json(response.error(error.message))
+        }
     }
 }
