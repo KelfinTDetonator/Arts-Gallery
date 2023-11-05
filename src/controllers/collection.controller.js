@@ -25,7 +25,7 @@ module.exports={
                     photo: imageUrl,
                     title,
                     description,
-                    artist_id: parseInt(artistId)
+                    artistId: parseInt(artistId)
                 }
             });
             return res.status(201).json(
@@ -72,7 +72,7 @@ module.exports={
 
             const getCollectionByUserId = await collections.findMany({
                 where: {
-                    artist_id: userId
+                    artistId: userId
                 }
             })
 
