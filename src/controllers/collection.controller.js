@@ -7,9 +7,10 @@ const userController = require('./users.controller')
 module.exports={
     uploadCollection: async(req, res)=>{
         try {
+            //Multer adds a body object and a file or files object to the request object -> req.file
             const allowedMimeTypes = ["image/jpeg", "image/png", "image/svg+xml", "image/jpg"];
             const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-
+            // console.log(req.file.originalname); //original file name nya
             const validationResult = await validateMIMEType(req.file.path, {
                 originalFilename: req.file.originalname,
                 allowMimeTypes: allowedMimeTypes,
@@ -123,7 +124,7 @@ module.exports={
                 }
             });
 
-            res.status(204).json(response.success("Collection updated successfully", edited))
+            res.status(200).json(response.success("Collection updated successfully", edited))
         } catch (error) {
             console.log(error);
             if(error.statusCode){
@@ -132,6 +133,32 @@ module.exports={
                 res.status(500).json(response.error("Internal Server Error")); return;
             }
         }
+    },
 
+    deleteCollectionById: async (req, res) => {
+        try {
+            const collectionId = parseInt(req.params.id);
+
+            const collection = await collections.findUnique({
+                where: {
+                    id: collectionId
+                }
+            })
+
+            if(!collection){
+                throw new CustomError(404, "Collection Not Found")
+            }
+
+            await collections.delete({ where: { id: collectionId } });
+
+            return res.sendStatus(204)
+        } catch (error) {
+            console.log(error);
+            if(error.statusCode){
+                res.status(error.statusCode).json(response.error(error.message)); return;
+            } else {
+                res.status(500).json(response.error("Internal Server Error")); return;
+            }
+        }
     }
 }
